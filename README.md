@@ -1,6 +1,6 @@
 # Brainrot
 
-An openCV + mediapipe program that detects facial expressions and displays goated Tiktok cats like Rigby and Larry
+A browser-based computer vision app that detects facial expressions and hand gestures to match you with viral memes in real-time. Built with React, MediaPipe, and pure chaos.
 
 <img src="https://github.com/monuit/brainrot-cv/blob/main/assets/cat-disgust.jpeg" width="300">
 
@@ -8,23 +8,27 @@ An openCV + mediapipe program that detects facial expressions and displays goate
 
 ## Introduction
 
-**Brainrot** is a CV program that maps human facial expressions to popular cat reactions on Tiktok in real time.
+**Brainrot** is a CV program that maps human facial expressions (and hand gestures!) to popular meme reactions in real time.
 
-Using your webcam and the mediapipe library, the system tracks key facial landmarks and displays a corresponding cat image when it detects expressions. Each cat is triggered using lightweight rules based on landmark movement like:
-1. Shock → mouth opens wide
-2. Tongue → mouth open without triggering shock
-3. Glare → eye squint
+Using your webcam and the MediaPipe library, the system tracks key facial landmarks and displays a corresponding meme when it detects specific expressions.
 
-**Note**: This program is designed to be fun and easy to extend — perfect for experimenting with facial heuristics and expression detection.
+**Supported Expressions (~14):**
+- Shock, Scream, Tongue, Happy, Sad, Wink
+- Glare, Suspicious, Sleepy, Eyebrow raise
+- Confused, Pout, Disgust, Kissy, Neutral
+
+**Supported Gestures (9):**
+- Middle Finger, Peace, Thumbs Up/Down
+- OK, Rock On, Wave, Fist, Pointing
 
 ---
 
 ## How it works
 
-1. Your webcam feed is processed in real time using mediapipe face mesh
-2. Facial landmarks are extracted (mouth, eyes, nose, etc.)
-3. Simple geometric heuristics determine which expression is active
-4. A matching Tiktok cat reaction is displayed in a separate window
+1. Your webcam feed is processed in real time using **MediaPipe Tasks Vision**.
+2. Facial landmarks and hand gestures are extracted directly in the browser.
+3. Heuristics determine which expression is active.
+4. A matching meme is displayed instantly.
 
 ---
 
@@ -33,88 +37,81 @@ Using your webcam and the mediapipe library, the system tracks key facial landma
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/monuit/brainrot-cv.git
+cd brainrot-cv
 ```
 
 ### 2. Install dependencies
-Make sure you have **Python 3.9+** installed on your system.
+Make sure you have **Node.js 18+** or **Bun** installed.
 
 ```bash
-pip install -r requirements.txt
+# using bun (recommended)
+bun install
+
+# using npm
+npm install
 ```
 
 ### 3. Run the program
 ```bash
-python main.py
+# using bun
+bun run dev
+
+# using npm
+npm run dev
 ```
+
+Open http://localhost:3000 in your browser.
 
 ---
 
 ## Configuration
 
-You can customize how the system behaves by editing the configuration values in `main.py`.
+You can customize sensitivity and thresholds in `src/lib/config.ts`.
 
-### eye_opening_threshold — Shock Detection
-Measures the vertical distance between the upper and lower eyelids for both eyes and triggers the shocked cat.
-- Increase this value → shock triggers only when eyes are very wide
-- Decrease this value → shock triggers more easily
-```python
-eye_opening_threshold = 0.026  # very exaggerated shock
-eye_opening_threshold = 0.020  # subtle eye widening
+### Expression Thresholds
+Adjust how easily expressions are triggered:
+
+```typescript
+export const CONFIG = {
+    thresholds: {
+        eyeOpening: 0.03,       // Shock detection
+        mouthOpen: 0.025,       // Tongue/mouth open detection
+        squinting: 0.018,       // Glare detection
+        smile: 0.012,           // Smile detection
+        // ...
+    },
+    // ...
+}
 ```
 
-### mouth_open_threshold — Tongue Detection
-Measures the vertical distance between the upper and lower lips and triggers only when the mouth opens in a narrow “tongue-out” shape.
-- Increase this value → tongue must come out more to trigger
-- Decrease this value → slight mouth opening may trigger tongue
-```python
-mouth_open_threshold = 0.045  # tongue must be very visible
-mouth_open_threshold = 0.030  # easier tongue trigger
-```
+### Transition Timings
+Control how fast memes switch:
 
-### squinting_threshold — Glare Detection
-Measures how close the upper and lower eyelids are and controls when the side-eye cat is triggered.
-- Lower this value → glare triggers only on strong squints
-- Higher this value → glare triggers more easily
-```python
-squinting_threshold = 0.016  # very strict glare
-squinting_threshold = 0.020  # softer glare
+```typescript
+    transitions: {
+        holdTime: 300,          // Must hold expression for 300ms
+        debounce: 500,          // Wait 500ms before next switch
+        crossfadeDuration: 300, // Visual fade duration
+    },
 ```
 
 ---
 
 ## Contributing
 
-If you want to add new cat reactions, improve detection logic, or tweak thresholds, feel free to make a pull request.
-
-This project is intentionally lightweight and heuristic-based, so experimentation is encouraged.
-
-### How to contribute
-
-1. Fork the repository  
-2. Create a new branch
-   ```bash
-   git checkout -b feat/your-feature
-   ```
-   
-3. Make your changes
-   - Add new cat images to assets/
-   - Add or refine expression logic in main.py
-   - Adjust thresholds or improve stability
-     
+1. Fork the repository
+2. Create a new branch (`git checkout -b feat/new-meme`)
+3. Add new memes to `src/assets/expressions/`
 4. Commit your changes
-   ```bash
-   git commit -m "Add new cat reaction"
-   ```
-   
 5. Push your branch and open a pull request
 
 ---
 
 ## License
 
-This project is licensed under the MIT License.  
+This project is licensed under the MIT License.
 See the [LICENSE](LICENSE) file for details.
 
 ---
 
-Have fun 🐱💻
+Have fun 🧠⬛
