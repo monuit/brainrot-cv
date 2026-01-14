@@ -3,7 +3,7 @@
  * Manages randomized meme selection with variety
  */
 
-import type { ExpressionType, GestureType, DetectionType } from './config';
+import type { DetectionType } from './config';
 
 // Meme pool structure - maps detection types to arrays of image paths
 const memePool: Record<string, string[]> = {
